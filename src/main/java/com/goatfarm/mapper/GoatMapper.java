@@ -1,47 +1,57 @@
 package com.goatfarm.mapper;
 
-import com.goatfarm.entity.Farm;
 import com.goatfarm.entity.Goat;
+import com.goatfarm.entity.Farm;
 import com.goatfarm.model.GoatData;
-
 
 public class GoatMapper {
 
-    // Entity → DTO
-    public static GoatData toDto(Goat goat) {
-        if (goat == null) return null;
+    // Convert Entity → DTO
+    public static GoatData toDto(Goat entity) {
+        if (entity == null) {
+            return null;
+        }
 
         GoatData dto = new GoatData();
-        dto.setGoatId(goat.getGoatId());
-        dto.setTagNumber(goat.getTagNumber());
-        dto.setBreed(goat.getBreed());
-        dto.setBirthDate(goat.getBirthDate());
-        dto.setWeight(goat.getWeight());
-        dto.setHealthStatus(goat.getHealthStatus());
-        dto.setFatherTagNumber(goat.getFatherTagNumber());
-        dto.setMotherTagNumber(goat.getMotherTagNumber());
-        dto.setGender(goat.getGender());
+        dto.setGoatId(entity.getGoatId());
+        dto.setTagNumber(entity.getTagNumber());
+        dto.setBreed(entity.getBreed());
+        dto.setBirthDate(entity.getBirthDate());
+        dto.setWeight(entity.getWeight());
+        dto.setHealthStatus(entity.getHealthStatus());
+        dto.setFatherTagNumber(entity.getFatherTagNumber());
+        dto.setMotherTagNumber(entity.getMotherTagNumber());
+        dto.setGender(entity.getGender());
+        dto.setHeight(entity.getHeight());
+        dto.setMilkPerDay(entity.getMilkPerDay());
+        dto.setLastKidCount(entity.getLastKidCount());
+
         return dto;
     }
 
-    // DTO → Entity
+    // Convert DTO → Entity
     public static Goat toEntity(GoatData dto, Farm farm) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
 
-        Goat goat = new Goat();
-        goat.setGoatId(dto.getGoatId());
-        goat.setTagNumber(dto.getTagNumber());
-        goat.setBreed(dto.getBreed());
-        goat.setBirthDate(dto.getBirthDate());
-        goat.setWeight(dto.getWeight());
-        goat.setHealthStatus(dto.getHealthStatus());
-        goat.setFarm(farm); // attach farm entity from DB
-        goat.setFatherTagNumber(dto.getFatherTagNumber());
-        goat.setMotherTagNumber(dto.getMotherTagNumber());
-        goat.setGender(dto.getGender());
+        Goat entity = new Goat();
+        entity.setGoatId(dto.getGoatId());
+        entity.setTagNumber(dto.getTagNumber());
+        entity.setBreed(dto.getBreed());
+        entity.setBirthDate(dto.getBirthDate());
+        entity.setWeight(dto.getWeight());
+        entity.setHealthStatus(dto.getHealthStatus());
+        entity.setFatherTagNumber(dto.getFatherTagNumber());
+        entity.setMotherTagNumber(dto.getMotherTagNumber());
+        entity.setGender(dto.getGender());
+        entity.setHeight(dto.getHeight());
+        entity.setMilkPerDay(dto.getMilkPerDay());
+        entity.setLastKidCount(dto.getLastKidCount());
 
-        return goat;
+        // Set relationship
+        entity.setFarm(farm);
+
+        return entity;
     }
 }
-
-

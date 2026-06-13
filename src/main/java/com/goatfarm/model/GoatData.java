@@ -18,4 +18,7 @@ public class GoatData {
     private String fatherTagNumber;
     private String motherTagNumber;
     private String gender;
+    private Double height;
+    private Double milkPerDay;
+    private Long lastKidCount;
 }

@@ -1,5 +1,6 @@
 package com.goatfarm.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class VaccinationRecord {
 
     @ManyToOne
     @JoinColumn(name = "goat_id", nullable = false)
+    @JsonBackReference
     private Goat goat;
 
     private String vaccineName;
@@ -26,6 +28,9 @@ public class VaccinationRecord {
 
     private String nextVaccineName;
     private LocalDate nextVaccinationDate;
+
+    @Column(name = "farm_id", nullable = true)
+    private Long farmId;
 
 
     // getters and setters

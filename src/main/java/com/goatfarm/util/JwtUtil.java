@@ -18,11 +18,13 @@ import java.util.Date;
 public class JwtUtil {
     private final String SECRET = "JHGJHfkljlwhsflhhjk65gjkhjl86968JKHKHdchjhklh6547887chgjlho";
 
-    public String generateToken(Long userId, String username, Long farmId) {
+    public String generateToken(Long userId, String username, String fullName, Long farmId, String farmName) {
         return Jwts.builder()
                 .claim("userId", userId)
                 .claim("username", username)
                 .claim("farmId", farmId)   // new claim
+                .claim("fullName", fullName)
+                .claim("farmName", farmName)
                 .issuedAt(new Date())
                 .expiration(Date.from(Instant.now().plus(7, ChronoUnit.DAYS)))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)

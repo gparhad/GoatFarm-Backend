@@ -9,6 +9,7 @@ public class FarmData {
     private String location;
     private Double size;
     private String goatTypes;
+    private Long userId;
     private UserData farmer; // include limited user info
 }
 

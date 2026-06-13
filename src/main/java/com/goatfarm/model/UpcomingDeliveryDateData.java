@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class BreedingRecordData {
+public class UpcomingDeliveryDateData {
     private Long breedingId;
     private LocalDate breedingDate;
     private String pregnancyStatus;
@@ -13,8 +13,6 @@ public class BreedingRecordData {
     private String goatTagNumber;
     private String breederTagNumber;
     private LocalDate expectedKiddingDate;
-    private Long goatId;
-    private Long mateId;
     private LocalDate deliveryDate;
     private Integer kidsAlive;
     private Integer kidsDead;

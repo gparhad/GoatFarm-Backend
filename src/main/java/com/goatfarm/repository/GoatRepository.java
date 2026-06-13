@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GoatRepository extends JpaRepository<Goat, Long> {
-    List<Goat> findByFarmFarmId(Long farmId);
+    List<Goat> findByFarm_FarmId(Long farmId);
 
-    Optional<Goat> findByTagNumber(String tagNumber);
+    Optional<Goat> findByTagNumberAndFarm_FarmId(String tagNumber, Long farmId);
+
+    Optional<Goat> findByGenderAndFarm_FarmId(String gender, Long farmId);
+
 }
 
 

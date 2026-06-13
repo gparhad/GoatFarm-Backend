@@ -1,7 +1,7 @@
 package com.goatfarm.entity;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +23,9 @@ public class Goat {
     private LocalDate birthDate;
     private Double weight;
     private String healthStatus;
+    private Double height;
+    private Double milkPerDay;
+    private Long lastKidCount;
     @Column(name = "father_tag_number")
     private String fatherTagNumber;
 
@@ -39,5 +42,8 @@ public class Goat {
 
     @OneToMany(mappedBy = "goat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VaccinationRecord> vaccinationRecords = new ArrayList<>();
+
+    @OneToMany(mappedBy = "goat", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BreedingRecord> breedingRecords = new ArrayList<>();
 
 }

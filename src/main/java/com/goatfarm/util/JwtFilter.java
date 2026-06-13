@@ -1,5 +1,6 @@
 package com.goatfarm.util;
 
+import com.goatfarm.model.AuthUser;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,30 +23,6 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request,
-//                                    HttpServletResponse response,
-//                                    FilterChain filterChain)
-//            throws ServletException, IOException {
-//
-//        String header = request.getHeader("Authorization");
-//        if (header != null && header.startsWith("Bearer ")) {
-//            String token = header.substring(7);
-//
-//            try {
-//                Claims claims = jwtUtil.validateToken(token);
-//                // If expired, validateToken will throw
-//                request.setAttribute("claims", claims);
-//            } catch (RuntimeException ex) {
-//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                response.getWriter().write("Invalid or expired token");
-//                return;
-//            }
-//        }
-//
-//        filterChain.doFilter(request, response);
-//    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -58,9 +35,10 @@ public class JwtFilter extends OncePerRequestFilter {
             Claims claims = jwtUtil.validateToken(token);
             if (claims != null) {
                 Long userId = claims.get("userId", Long.class);
+                Long farmId = claims.get("farmId", Long.class);
+                AuthUser user = new AuthUser(userId, farmId);
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userId, null, List.of());
-                authentication.setDetails(claims);
+                        new UsernamePasswordAuthenticationToken(user, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

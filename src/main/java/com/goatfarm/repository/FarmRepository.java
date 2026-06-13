@@ -14,6 +14,8 @@ public interface FarmRepository extends JpaRepository<Farm, Long> {
     @Query("SELECT f FROM Farm f WHERE f.farmer.userId = :userId")
     Optional<Farm> findFarmByFarmerId(@Param("userId") Long userId);
 
+    Optional<Farm> findFarmByFarmId(Long farmId);
+
 
 //    List<Farm> findByFarmerId(Long userId);
 }

@@ -1,7 +1,6 @@
 package com.goatfarm.service;
 
 import com.goatfarm.entity.HealthRecord;
-import com.goatfarm.repository.HealthRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

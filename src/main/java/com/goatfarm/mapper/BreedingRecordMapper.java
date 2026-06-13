@@ -3,52 +3,56 @@ package com.goatfarm.mapper;
 import com.goatfarm.entity.BreedingRecord;
 import com.goatfarm.entity.Goat;
 import com.goatfarm.model.BreedingRecordData;
-import org.springframework.stereotype.Component;
 
-@Component
 public class BreedingRecordMapper {
 
-    // Entity → DTO
-    public BreedingRecordData toDto(BreedingRecord record) {
-        if (record == null) return null;
+    // Convert Entity → DTO
+    public static BreedingRecordData toDto(BreedingRecord entity) {
+        if (entity == null) {
+            return null;
+        }
 
         BreedingRecordData dto = new BreedingRecordData();
-        dto.setBreedingId(record.getBreedingId());
-        dto.setBreedingDate(record.getBreedingDate());
-        dto.setPregnancyStatus(record.getPregnancyStatus());
-        dto.setOffspringCount(record.getOffspringCount());
-        dto.setGoatTagNumber(record.getGoatTagNumber());
-        dto.setBreederTagNumber(record.getBreederTagNumber());
-        dto.setExpectedKiddingDate(record.getExpected_kidding_date());
+        dto.setBreedingId(entity.getBreedingId());
+        dto.setBreedingDate(entity.getBreedingDate());
+        dto.setPregnancyStatus(entity.getPregnancyStatus());
+        dto.setOffspringCount(entity.getOffspringCount());
+        dto.setGoatTagNumber(entity.getGoatTagNumber());
+        dto.setBreederTagNumber(entity.getBreederTagNumber());
+        dto.setExpectedKiddingDate(entity.getExpectedKiddingDate());
+        dto.setDeliveryDate(entity.getDeliveryDate());
+        dto.setKidsAlive(entity.getKidsAlive());
+        dto.setKidsDead(entity.getKidsDead());
 
-        if (record.getGoat() != null) {
-            dto.setGoatId(record.getGoat().getGoatId());
-        }
-        if (record.getMate() != null) {
-            dto.setMateId(record.getMate().getGoatId());
-        }
+        // Extract IDs from relationships
+        dto.setGoatId(entity.getGoat() != null ? entity.getGoat().getGoatId() : null);
+        dto.setMateId(entity.getMate() != null ? entity.getMate().getGoatId() : null);
 
         return dto;
     }
 
-    // DTO → Entity
-    public BreedingRecord toEntity(BreedingRecordData dto, Goat goat, Goat mate) {
-        if (dto == null) return null;
-
-        BreedingRecord record = new BreedingRecord();
-        record.setBreedingId(dto.getBreedingId());
-        record.setBreedingDate(dto.getBreedingDate());
-        record.setPregnancyStatus(dto.getPregnancyStatus());
-        record.setOffspringCount(dto.getOffspringCount());
-        record.setGoatTagNumber(dto.getGoatTagNumber());
-        record.setBreederTagNumber(dto.getBreederTagNumber());
-        record.setExpected_kidding_date(dto.getExpectedKiddingDate());
-        record.setGoat(goat);
-        record.setMate(mate);
-        if (dto.getBreedingDate() != null) {
-            record.setExpected_kidding_date(dto.getBreedingDate().plusDays(150));
+    // Convert DTO → Entity
+    public static BreedingRecord toEntity(BreedingRecordData dto, Goat goat, Goat mate) {
+        if (dto == null) {
+            return null;
         }
 
-        return record;
+        BreedingRecord entity = new BreedingRecord();
+        entity.setBreedingId(dto.getBreedingId());
+        entity.setBreedingDate(dto.getBreedingDate());
+        entity.setPregnancyStatus(dto.getPregnancyStatus());
+        entity.setOffspringCount(dto.getOffspringCount());
+        entity.setGoatTagNumber(dto.getGoatTagNumber());
+        entity.setBreederTagNumber(dto.getBreederTagNumber());
+        entity.setExpectedKiddingDate(dto.getExpectedKiddingDate());
+        entity.setDeliveryDate(dto.getDeliveryDate());
+        entity.setKidsAlive(dto.getKidsAlive());
+        entity.setKidsDead(dto.getKidsDead());
+
+        // Set relationships
+        entity.setGoat(goat);
+        entity.setMate(mate);
+        return entity;
     }
 }
+

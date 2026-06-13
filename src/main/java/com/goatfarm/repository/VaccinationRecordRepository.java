@@ -21,4 +21,14 @@ public interface VaccinationRecordRepository extends JpaRepository<VaccinationRe
     List<VaccinationRecord> findDueVaccinationsByFarmAndDate(@Param("farmId") Long farmId,
                                                              @Param("date") LocalDate date);
 
+    @Query("""
+            select v
+            from VaccinationRecord v
+            where v.farmId= :farmId
+            and v.nextVaccinationDate is not null
+            and v. nextVaccinationDate between :from and :to
+            order by v.nextVaccinationDate asc
+            """)
+    List<VaccinationRecord> findUpcomingVaccinations(@Param("farmId") Long farmId, @Param("from") LocalDate from, @Param("to") LocalDate to);
+
 }
