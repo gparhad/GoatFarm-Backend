@@ -6,6 +6,6 @@ import lombok.Data;
 public class FarmUpdateData {
     private String farmName;
     private String location;
-    private Integer size;
+    private Double size;
     private String goatType;
 }

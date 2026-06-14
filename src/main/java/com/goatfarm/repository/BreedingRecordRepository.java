@@ -14,7 +14,7 @@ public interface BreedingRecordRepository extends JpaRepository<BreedingRecord, 
 
     List<BreedingRecord> findByBreederTagNumberAndFarm_FarmId(String breederTagNumber, Long farmId);
 
-    Optional<BreedingRecord> findTopByGoatTagNumberAndPregnancyStatusAndFarm_FarmIdOrderByBreedingDateDesc(String goatTagNumber, String pregnancyStatus, Long farmId);
+    Optional<BreedingRecord> findByGoatTagNumberAndPregnancyStatusAndFarm_FarmIdOrderByBreedingDateDesc(String goatTagNumber, String pregnancyStatus, Long farmId);
 
     boolean existsByGoatTagNumberAndPregnancyStatusAndFarm_FarmId(String goatTagNumber, String pregnancyStatus, Long farmId);
 
@@ -27,5 +27,5 @@ public interface BreedingRecordRepository extends JpaRepository<BreedingRecord, 
             and b.expectedKiddingDate between :from and :to
             order by b.expectedKiddingDate asc
             """)
-    List<BreedingRecord> findDueDeliveryInWindow(@Param("farmId") Long farmId, @Param("from") LocalDate from, @Param("to") LocalDate to, String status);
+    List<BreedingRecord> findDueDeliveriesInWindow(@Param("farmId") Long farmId, @Param("from") LocalDate from, @Param("to") LocalDate to, String status);
 }

@@ -3,7 +3,9 @@ package com.goatfarm.mapper;
 import com.goatfarm.entity.BreedingRecord;
 import com.goatfarm.entity.Goat;
 import com.goatfarm.model.BreedingRecordData;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BreedingRecordMapper {
 
     // Convert Entity → DTO

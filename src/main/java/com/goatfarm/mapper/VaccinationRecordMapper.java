@@ -3,7 +3,9 @@ package com.goatfarm.mapper;
 import com.goatfarm.entity.VaccinationRecord;
 import com.goatfarm.entity.Goat;
 import com.goatfarm.model.VaccinationRecordData;
+import org.springframework.stereotype.Component;
 
+@Component
 public class VaccinationRecordMapper {
 
     // Convert Entity → DTO
