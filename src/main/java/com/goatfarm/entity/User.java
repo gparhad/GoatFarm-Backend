@@ -11,6 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
     private String fullName;
+    @Column(name = "username")
     private String userName;
     private String passwordHash;
     private String role; // ADMIN, FARMER, VETERINARIAN

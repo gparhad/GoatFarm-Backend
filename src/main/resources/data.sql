@@ -1,5 +1,5 @@
-INSERT INTO Users (username, password_hash, role, email, phone)
-VALUES ('dev', 'demo_hash_123', 'FARMER', 'ganesh@example.com', '9999999999');
+--INSERT INTO Users (username, password_hash, role, email, phone)
+--VALUES ('dev', 'demo_hash_123', 'FARMER', 'ganesh@example.com', '9999999999');
 
 INSERT INTO users (user_id,
                    full_name,
