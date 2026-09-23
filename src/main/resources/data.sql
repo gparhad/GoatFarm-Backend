@@ -2,7 +2,7 @@
 --VALUES ('dev', 'demo_hash_123', 'FARMER', 'ganesh@example.com', '9999999999');
 
 INSERT INTO users (user_id,
-                   full_name,
+                   fullname,
                    username,
                    password_hash,
                    phone,
@@ -319,9 +319,9 @@ INSERT INTO vaccination_record (goat_id, vaccine_name, vaccination_date, adminis
 VALUES
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2022-06-24', 'Dr. Vet', '2 ml (SC)', 'ET first dose', 'ET_BOOSTER', '2022-07-15', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET_BOOSTER', '2022-07-15', 'Dr. Vet', '2 ml (SC)', 'ET booster after 21 days', 'ET', '2023-01-15', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2023-01-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2023-07-15', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2023-07-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2024-01-15', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2024-01-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2024-07-15', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2023-01-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2026-09-27', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2023-07-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2026-09-27', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2024-01-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2024-07-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2025-01-15', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2025-01-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2025-07-15', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'ET', '2025-07-15', 'Dr. Vet', '2 ml (SC)', '6-month repeat', 'ET', '2026-01-15', 1),
@@ -331,21 +331,21 @@ VALUES
 -- FMD (dose + booster + 6-month repeats)
 INSERT INTO vaccination_record (goat_id, vaccine_name, vaccination_date, administered_by, dosage, remarks, next_vaccine_name, next_vaccination_date, farm_id)
 VALUES
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2022-08-15', 'Dr. Vet', '2 ml (IM/SC)', 'FMD first dose', 'FMD_BOOSTER', '2022-09-05', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2022-08-15', 'Dr. Vet', '2 ml (IM/SC)', 'FMD first dose', 'FMD_BOOSTER', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD_BOOSTER', '2022-09-05', 'Dr. Vet', '2 ml (IM/SC)', 'FMD booster after 21 days', 'FMD', '2023-03-05', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2023-03-05', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2023-10-15', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2023-03-05', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2023-10-15', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2024-04-15', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2024-04-15', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2024-10-15', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2024-10-15', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2025-04-15', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2025-04-15', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2025-10-15', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2025-04-15', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2025-10-15', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2026-04-15', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2026-04-15', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2026-10-15', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2026-04-15', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'FMD', '2026-06-14', 'Dr. Vet', '2 ml (IM/SC)', '6-month repeat', 'FMD', '2026-12-14', 1);
 
 -- PPR (yearly)
 INSERT INTO vaccination_record (goat_id, vaccine_name, vaccination_date, administered_by, dosage, remarks, next_vaccine_name, next_vaccination_date, farm_id)
 VALUES
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'PPR', '2022-09-10', 'Dr. Vet', '1 ml (SC)', 'PPR yearly', 'PPR', '2023-09-10', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'PPR', '2022-09-10', 'Dr. Vet', '1 ml (SC)', 'PPR yearly', 'PPR', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'PPR', '2023-09-10', 'Dr. Vet', '1 ml (SC)', 'PPR yearly', 'PPR', '2024-09-10', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'PPR', '2024-09-10', 'Dr. Vet', '1 ml (SC)', 'PPR yearly', 'PPR', '2025-09-10', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'PPR', '2025-09-10', 'Dr. Vet', '1 ml (SC)', 'PPR yearly', 'PPR', '2026-09-10', 1);
@@ -353,15 +353,15 @@ VALUES
 -- HS (yearly, before monsoon)
 INSERT INTO vaccination_record (goat_id, vaccine_name, vaccination_date, administered_by, dosage, remarks, next_vaccine_name, next_vaccination_date, farm_id)
 VALUES
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'HS', '2022-05-10', 'Dr. Vet', '2 ml (SC)', 'Before monsoon', 'HS', '2023-05-10', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'HS', '2022-05-10', 'Dr. Vet', '2 ml (SC)', 'Before monsoon', 'HS', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'HS', '2023-05-10', 'Dr. Vet', '2 ml (SC)', 'Before monsoon', 'HS', '2024-05-10', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'HS', '2024-05-10', 'Dr. Vet', '2 ml (SC)', 'Before monsoon', 'HS', '2025-05-10', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'HS', '2024-05-10', 'Dr. Vet', '2 ml (SC)', 'Before monsoon', 'HS', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'HS', '2025-05-10', 'Dr. Vet', '2 ml (SC)', 'Before monsoon', 'HS', '2026-05-10', 1);
 
 -- Goat Pox (yearly, pre-winter)
 INSERT INTO vaccination_record (goat_id, vaccine_name, vaccination_date, administered_by, dosage, remarks, next_vaccine_name, next_vaccination_date, farm_id)
 VALUES
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'GOAT_POX', '2022-10-20', 'Dr. Vet', '0.5 ml (SC)', 'Pre-winter', 'GOAT_POX', '2023-10-20', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'GOAT_POX', '2023-10-20', 'Dr. Vet', '0.5 ml (SC)', 'Pre-winter', 'GOAT_POX', '2024-10-20', 1),
-((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'GOAT_POX', '2024-10-20', 'Dr. Vet', '0.5 ml (SC)', 'Pre-winter', 'GOAT_POX', '2025-10-20', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'GOAT_POX', '2023-10-20', 'Dr. Vet', '0.5 ml (SC)', 'Pre-winter', 'GOAT_POX', '2026-09-27', 1),
+((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'GOAT_POX', '2024-10-20', 'Dr. Vet', '0.5 ml (SC)', 'Pre-winter', 'GOAT_POX', '2026-09-27', 1),
 ((SELECT goat_id FROM GOAT WHERE tag_number = 'G4001'), 'GOAT_POX', '2025-10-20', 'Dr. Vet', '0.5 ml (SC)', 'Pre-winter', 'GOAT_POX', '2026-10-20', 1);

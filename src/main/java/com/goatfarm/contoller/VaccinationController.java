@@ -13,7 +13,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/vaccinations")
-public class VaccinationController {
+public class
+VaccinationController {
 
     private final VaccinationService vaccinationService;
 

@@ -70,7 +70,7 @@ public class AuthController {
                 userData.getFarmName()
 
         );
-        return ResponseEntity.ok((Map.of("Token", token)));
+        return ResponseEntity.ok((Map.of("token", token)));
     }
 
     @PostMapping("/forgot-password/verify")

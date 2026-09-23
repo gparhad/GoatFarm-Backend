@@ -10,6 +10,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+    @Column(name = "fullname")
     private String fullName;
     @Column(name = "username")
     private String userName;

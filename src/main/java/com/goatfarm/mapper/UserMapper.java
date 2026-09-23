@@ -14,6 +14,7 @@ public class UserMapper {
         dto.setUserName(user.getUserName());
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
+        dto.setFullName(user.getFullName());
         if(Objects.nonNull(user.getFarm()))
         {
             dto.setFarmId(user.getFarm().getFarmId());
