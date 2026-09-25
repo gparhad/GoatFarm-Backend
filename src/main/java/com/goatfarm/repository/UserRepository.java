@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUserName(String userName);
+    Optional<User> findByEmail(String email);
 
-//    List<Farm> findByFarmerId(Long userId);
+    boolean existsByEmail(String email);
+
+    // Used during updates to exclude the current user's own email
+    boolean existsByEmailAndUserIdNot(String email, Long userId);
 }

@@ -11,8 +11,7 @@ public interface GoatRepository extends JpaRepository<Goat, Long> {
 
     Optional<Goat> findByTagNumberAndFarm_FarmId(String tagNumber, Long farmId);
 
-    Optional<Goat> findByGenderAndFarm_FarmId(String gender, Long farmId);
-
+    List<Goat> findByGenderAndFarm_FarmIdAndTagNumberNot(String gender, Long farmId, String tagNumber);
 }
 
 

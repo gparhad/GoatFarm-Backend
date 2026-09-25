@@ -56,7 +56,7 @@ public class VaccinationService {
             checkIntervalBetweenTwoVaccines(dto, records);
 
             // Rule 2: Booster enforcement
-            validateVaccination(records, dto);
+//            validateVaccination(records, dto);
 
             // Rule 3: Post-booster minimum interval check
             // validateVaccinationOrder(records, dto);
@@ -125,7 +125,8 @@ public class VaccinationService {
     }
 
     // VALIDATION RULES (kept same behavior)
-    private static void checkIntervalBetweenTwoVaccines(VaccinationRecordData dto, List<VaccinationRecord> records) {
+    private static void
+    checkIntervalBetweenTwoVaccines(VaccinationRecordData dto, List<VaccinationRecord> records) {
         Optional<VaccinationRecord> lastRecordOpt = records.stream()
                 .max(Comparator.comparing(VaccinationRecord::getVaccinationDate));
 

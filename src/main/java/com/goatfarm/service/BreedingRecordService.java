@@ -197,11 +197,20 @@ public class BreedingRecordService {
     }
 
     private List<String> findSafeBreeders(Goat goat, Long farmId) {
-        return goatRepository.findByGenderAndFarm_FarmId("MALE",farmId).stream()
-                .filter(b -> !b.getTagNumber().equals(goat.getTagNumber()))
-                .filter(b -> !evaluateRelation(goat, b, farmId).isInbreeding())
+        List<Goat> potentialBreeders = goatRepository.findByGenderAndFarm_FarmIdAndTagNumberNot(
+                "MALE",
+                farmId,
+                goat.getTagNumber()
+        );
+
+        if (potentialBreeders.isEmpty()) {
+            return List.of();
+        }
+
+        return potentialBreeders.stream()
+                .filter(breeder -> !evaluateRelation(goat, breeder, farmId).isInbreeding())
                 .map(Goat::getTagNumber)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
@@ -296,8 +305,10 @@ public class BreedingRecordService {
         if ("DELIVERED".equals(dto.getPregnancyStatus())) {
             if (dto.getDeliveryDate() == null) throw new IllegalArgumentException("Delivery date is required");
             if (dto.getOffspringCount() == null) throw new IllegalArgumentException("Offspring count is required");
-            if (dto.getKidsAlive() == null || dto.getKidsDead() == null) throw new IllegalArgumentException("Kids alive/dead required");
-            if (dto.getOffspringCount() != (dto.getKidsAlive() + dto.getKidsDead())) throw new IllegalArgumentException("Kids alive + dead must equal offspring count");
+            if (dto.getKidsAlive() == null || dto.getKidsDead() == null)
+                throw new IllegalArgumentException("Kids alive/dead required");
+            if (dto.getOffspringCount() != (dto.getKidsAlive() + dto.getKidsDead()))
+                throw new IllegalArgumentException("Kids alive + dead must equal offspring count");
         }
 
         if ("ABORTED".equals(dto.getPregnancyStatus())) {

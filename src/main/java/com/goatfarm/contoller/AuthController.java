@@ -35,14 +35,14 @@ public class AuthController {
 
         if (loginRequest == null ||
 
-                loginRequest.getUserName() == null || loginRequest.getUserName().isBlank() ||
+                loginRequest.getEmail() == null || loginRequest.getEmail().isBlank() ||
 
                 loginRequest.getPassword() == null) {
 
             throw new InvalidCredentialException();
         }
 
-        UserData userData = userService.findByUsername(loginRequest.getUserName());
+        UserData userData = userService.findByUsername(loginRequest.getEmail());
 
 // same behavior: invalid if user missing or password missing
 
@@ -61,7 +61,7 @@ public class AuthController {
 
                 userData.getUserId(),
 
-                userData.getUserName(),
+                userData.getEmail(),
 
                 userData.getFullName(),
 
@@ -77,7 +77,7 @@ public class AuthController {
     public ResponseEntity<ForgotPasswordVerifyResponse> verifyForgotPasswordUser(@RequestBody ForgotPasswordVerifyRequest request) {
 
         ForgotPasswordVerifyResponse response =
-                forgotPasswordService.verifyUser(request.getUsername(), request.getPhone());
+                forgotPasswordService.verifyUser(request.getEmail(), request.getPhone());
 
         return ResponseEntity.ok(response);
     }

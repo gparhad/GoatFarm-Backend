@@ -12,10 +12,9 @@ public class User {
     private Long userId;
     @Column(name = "fullname")
     private String fullName;
-    @Column(name = "username")
-    private String userName;
+    @Column(name = "password_hash")
     private String passwordHash;
-    private String role; // ADMIN, FARMER, VETERINARIAN
+    @Column(name = "email", unique = true)
     private String email;
     private String phone;
 

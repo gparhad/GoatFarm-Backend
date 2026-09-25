@@ -11,7 +11,6 @@ public class UserMapper {
         if (user == null) return null;
         UserData dto = new UserData();
         dto.setUserId(user.getUserId());
-        dto.setUserName(user.getUserName());
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
         dto.setFullName(user.getFullName());
@@ -32,13 +31,13 @@ public class UserMapper {
         if (dto == null) return null;
         User user = new User();
         user.setUserId(dto.getUserId());
-        user.setUserName(dto.getUserName());
+        user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
-        if(passwordRequired)
-        {
-            dto.setPasswordHash(user.getPasswordHash());
-        }        return user;
+        if (passwordRequired) {
+            user.setPasswordHash(dto.getPasswordHash());
+        }
+        return user;
     }
 
     public static User toUserForUpdate(UserData userData, Long userId){

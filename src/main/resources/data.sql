@@ -1,31 +1,28 @@
 --INSERT INTO Users (username, password_hash, role, email, phone)
 --VALUES ('dev', 'demo_hash_123', 'FARMER', 'ganesh@example.com', '9999999999');
 
-INSERT INTO users (user_id,
+INSERT INTO users (
                    fullname,
-                   username,
                    password_hash,
                    phone,
-                   email,
-                   role)
-VALUES (1,
+                   email)
+VALUES (
         'Ganesh Patil',
-        'ganesh',
         'password123',
         '9999999999',
-        'ganesh@example.com',
-        'ADMIN');
+        'ganesh@example.com'
+     );
 
 -- FARM (link to farmer)
 -- H2 supports SCOPE_IDENTITY() to fetch last generated ID
 -- -------------------------------------------------------------
-INSERT INTO farm (farm_id,
+INSERT INTO farm (
                   farm_name,
                   location,
                   size,
                   goat_types,
                   farmer_id)
-VALUES (1,
+VALUES (
         'Green Valley Farm',
         'Pune, Maharashtra',
         50,

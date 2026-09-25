@@ -18,10 +18,10 @@ import java.util.Date;
 public class JwtUtil {
     private final String SECRET = "JHGJHfkljlwhsflhhjk65gjkhjl86968JKHKHdchjhklh6547887chgjlho";
 
-    public String generateToken(Long userId, String userName, String fullName, Long farmId, String farmName) {
+    public String generateToken(Long userId, String email, String fullName, Long farmId, String farmName) {
         return Jwts.builder()
                 .claim("userId", userId)
-                .claim("userName", userName)
+                .claim("email", email)
                 .claim("farmId", farmId)   // new claim
                 .claim("fullName", fullName)
                 .claim("farmName", farmName)

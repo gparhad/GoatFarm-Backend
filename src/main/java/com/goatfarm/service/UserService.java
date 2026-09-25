@@ -18,13 +18,26 @@ public class UserService {
     }
 
     public UserData createUser(UserData user) {
-        // No functional change: still saves via mapper
+        // Sanitize: Treat empty string as null so it doesn't trigger unique constraint collisions
+        String email = cleanEmail(user.getEmail());
+        user.setEmail(email);
+
+        if (email != null && userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email '" + email + "' is already in use.");
+        }
+
         User userEntity = userRepository.save(UserMapper.toUser(user, true));
         return UserMapper.toUserDTO(userEntity, false);
     }
 
     public UserData updateUser(UserData user, Long userId) {
-        // No functional change: still saves via mapper
+        String email = cleanEmail(user.getEmail());
+        user.setEmail(email);
+
+        if (email != null && userRepository.existsByEmailAndUserIdNot(email, userId)) {
+            throw new IllegalArgumentException("Email '" + email + "' is already in use by another user.");
+        }
+
         User userEntity = userRepository.save(UserMapper.toUserForUpdate(user, userId));
         return UserMapper.toUserDTO(userEntity, false);
     }
@@ -34,23 +47,21 @@ public class UserService {
     }
 
     public UserData getUserById(Long id) {
-        // No functional change
-        // previously: orElse(new User()) and then mapped
         return userRepository.findById(id)
                 .map(user -> UserMapper.toUserDTO(user, false))
                 .orElseGet(UserData::new);
     }
 
-    /**
-     * No functional change:
-     * - If user exists -> return mapped UserData with password info (true)
-     * - If not exists -> return empty UserData (new UserData())
-     *
-     * (AuthController treats empty user as invalid credentials -> same end result)
-     */
-    public UserData findByUsername(String username) {
-        return userRepository.findByUserName(username)
+    public UserData findByUsername(String email) {
+        return userRepository.findByEmail(email)
                 .map(user -> UserMapper.toUserDTO(user, true))
                 .orElseGet(UserData::new);
+    }
+
+    private String cleanEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return null;
+        }
+        return email.trim().toLowerCase();
     }
 }

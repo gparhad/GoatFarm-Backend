@@ -24,15 +24,15 @@ public class ForgotPasswordService {
     }
 
     @Transactional
-    public ForgotPasswordVerifyResponse verifyUser(String username, String phone) {
-        if (username == null || username.isBlank()) {
+    public ForgotPasswordVerifyResponse verifyUser(String email, String phone) {
+        if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("Username is required");
         }
         if (phone == null || phone.isBlank()) {
             throw new IllegalArgumentException("Phone number is required");
         }
 
-        User user = userRepository.findByUserName(username)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         if (user.getPhone() == null || !user.getPhone().equals(phone)) {
