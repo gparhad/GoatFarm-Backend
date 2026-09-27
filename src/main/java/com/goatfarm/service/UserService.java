@@ -4,9 +4,11 @@ import com.goatfarm.entity.User;
 import com.goatfarm.mapper.UserMapper;
 import com.goatfarm.model.UserData;
 import com.goatfarm.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -30,15 +32,17 @@ public class UserService {
         return UserMapper.toUserDTO(userEntity, false);
     }
 
-    public UserData updateUser(UserData user, Long userId) {
-        String email = cleanEmail(user.getEmail());
-        user.setEmail(email);
+    public UserData updateUser(UserData userData, Long userId) {
+        String email = cleanEmail(userData.getEmail());
+        userData.setEmail(email);
 
         if (email != null && userRepository.existsByEmailAndUserIdNot(email, userId)) {
             throw new IllegalArgumentException("Email '" + email + "' is already in use by another user.");
         }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Farm not found: " + userId));
 
-        User userEntity = userRepository.save(UserMapper.toUserForUpdate(user, userId));
+        User userEntity = userRepository.save(UserMapper.toUserForUpdate(userData, userId, user));
         return UserMapper.toUserDTO(userEntity, false);
     }
 

@@ -40,10 +40,8 @@ public class UserMapper {
         return user;
     }
 
-    public static User toUserForUpdate(UserData userData, Long userId){
+    public static User toUserForUpdate(UserData userData, Long userId, User user){
         if(userData == null) return null;
-        User user = new User();
-        user.setUserId(userId);
         user.setEmail(userData.getEmail());
         user.setPhone(userData.getPhone());
         user.setFullName(user.getFullName());

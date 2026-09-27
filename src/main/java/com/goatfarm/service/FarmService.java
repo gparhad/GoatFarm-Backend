@@ -71,9 +71,10 @@ public class FarmService {
         Farm farm = farmRepository.findById(farmId)
                 .orElseThrow(() -> new EntityNotFoundException("Farm not found: " + farmId));
 
+
         // Update farm fields
-        farm.setFarmName(req.getFarmName());
-        farm.setLocation(req.getLocation());
+//        farm.setFarmName(req.getFarmName());
+//        farm.setLocation(req.getLocation());
         farm.setSize(req.getSize());
         farm.setGoatTypes(normalizeGoatTypes(req.getGoatType()));
 
