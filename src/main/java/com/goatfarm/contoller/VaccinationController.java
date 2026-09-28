@@ -74,18 +74,5 @@ VaccinationController {
         List<VaccinationRecordData> result = vaccinationService.getUpcomingVaccinations(authUser.getFarmId(), 7);
         return ResponseEntity.ok(result);
     }
-
-    /*
-     * Optional (recommended future): query param based endpoint
-     * Example: /api/vaccinations/upcoming?days=7
-     * Not required for UI now, so not enabling unless you want.
-     */
-    // @GetMapping("/upcoming")
-    // public ResponseEntity<List<VaccinationRecordData>> getUpcomingVaccinations(
-    //         @RequestParam(defaultValue = "7") int days,
-    //         @AuthenticationPrincipal AuthUser authUser
-    // ) {
-    //     return ResponseEntity.ok(vaccinationService.getUpcomingVaccinations(authUser.getFarmId(), days));
-    // }
 }
 

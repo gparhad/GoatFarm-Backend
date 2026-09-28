@@ -3,6 +3,7 @@ package com.goatfarm.contoller;
 import com.goatfarm.entity.Goat;
 import com.goatfarm.model.AuthUser;
 import com.goatfarm.model.GoatData;
+import com.goatfarm.model.GoatHistoryData;
 import com.goatfarm.service.GoatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -81,6 +82,15 @@ public class GoatController {
     ) {
         goatService.deleteByTagNumberAndFarmId(tagNumber, authUser.getFarmId());
         return ResponseEntity.ok(Map.of("message", "Goat deleted successfully"));
+    }
+
+    @GetMapping("/details/{tagNumber}")
+    public ResponseEntity<GoatHistoryData> getGoatHistoryByTagNumber(
+            @PathVariable String tagNumber,
+            @RequestParam(defaultValue = "5") int depth,
+            @AuthenticationPrincipal AuthUser authUser
+    ) {
+        return ResponseEntity.ok(goatService.getGoatHistoryDataByTagNumberAndFarmId(tagNumber, authUser.getFarmId(), depth));
     }
 }
 

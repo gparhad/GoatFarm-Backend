@@ -12,7 +12,11 @@ public class GoatTreeNode {
     private LocalDate birthDate;
     private GoatTreeNode father;
     private GoatTreeNode mother;
+    private Double weight;
+    private Double height;
 
     private boolean cycleDetected;
     private String missingReason;
+
+
 }
