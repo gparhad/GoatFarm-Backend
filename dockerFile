@@ -1,0 +1,25 @@
+# Stage 1: Build the JAR
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
+WORKDIR /app
+COPY pom.xml .
+# Download dependencies first to leverage Docker layer caching
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Stage 2: Minimal Runtime Environment
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Run as non-root user for security
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+
+COPY --from=build /app/target/*.jar app.jar
+
+# Render exposes the application port via the PORT environment variable (default: 10000)
+ENV PORT=10000
+EXPOSE 10000
+
+# Strict JVM memory constraints tailored for Render's 512MB limit
+ENTRYPOINT ["sh", "-c", "java $JAVA_TOOL_OPTIONS -Dserver.port=${PORT} -jar app.jar"]
