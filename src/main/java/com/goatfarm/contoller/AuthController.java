@@ -6,10 +6,7 @@ import com.goatfarm.service.ForgotPasswordService;
 import com.goatfarm.service.UserService;
 import com.goatfarm.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -97,6 +94,16 @@ public class AuthController {
 
         return ResponseEntity.ok(Map.of(
                 "message", "Password updated successfully"
+        ));
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> healthCheck(
+    ) {
+
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Service is up and running"
         ));
     }
 }
