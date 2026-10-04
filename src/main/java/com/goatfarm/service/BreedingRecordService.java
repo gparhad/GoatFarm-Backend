@@ -1,6 +1,7 @@
 package com.goatfarm.service;
 
 import com.goatfarm.entity.BreedingRecord;
+import com.goatfarm.entity.Farm;
 import com.goatfarm.entity.Goat;
 import com.goatfarm.model.BreedingCheckResult;
 import com.goatfarm.mapper.BreedingRecordMapper;
@@ -49,12 +50,14 @@ public class BreedingRecordService {
         Goat breeder = goatRepository.findByTagNumberAndFarm_FarmId(dto.getBreederTagNumber(), farmId)
                 .orElseThrow(() -> new EntityNotFoundException("Breeder not found"));
 
+
         BreedingCheckResult result = evaluateRelation(goat, breeder, farmId);
         if (result.isInbreeding()) {
             throw new IllegalArgumentException(result.getMessage());
         }
 
-        BreedingRecord record = breedingRecordMapper.toEntity(dto, goat, breeder);
+
+        BreedingRecord record = breedingRecordMapper.toEntity(dto, goat, breeder,farmId);
         BreedingRecord saved = breedingRecordRepository.save(record);
 
         return breedingRecordMapper.toDto(saved);
@@ -275,7 +278,7 @@ public class BreedingRecordService {
     }
 
     public Map<String, Object> getLatestPregnantRecord(String goatTag, Long farmId) {
-        var recordOpt = breedingRecordRepository.findByGoatTagNumberAndPregnancyStatusAndFarm_FarmIdOrderByBreedingDateDesc(
+        var recordOpt = breedingRecordRepository.findByGoatTagNumberAndPregnancyStatusAndFarm_FarmId(
                 goatTag, "PREGNANT", farmId);
 
         if (recordOpt.isEmpty()) {
@@ -292,7 +295,7 @@ public class BreedingRecordService {
 
     @Transactional
     public Map<String, Object> updateDeliveryDetails(String goatTag, BreedingRecordData dto, Long farmId) {
-        var recordOpt = breedingRecordRepository.findByGoatTagNumberAndPregnancyStatusAndFarm_FarmIdOrderByBreedingDateDesc(
+        var recordOpt = breedingRecordRepository.findByGoatTagNumberAndPregnancyStatusAndFarm_FarmId(
                 goatTag, "PREGNANT", farmId);
 
         if (recordOpt.isEmpty()) {

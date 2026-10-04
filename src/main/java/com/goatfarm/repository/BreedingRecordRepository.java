@@ -14,7 +14,7 @@ public interface BreedingRecordRepository extends JpaRepository<BreedingRecord, 
 
     List<BreedingRecord> findByBreederTagNumberAndFarm_FarmId(String breederTagNumber, Long farmId);
 
-    Optional<BreedingRecord> findByGoatTagNumberAndPregnancyStatusAndFarm_FarmIdOrderByBreedingDateDesc(String goatTagNumber, String pregnancyStatus, Long farmId);
+    Optional<BreedingRecord> findByGoatTagNumberAndPregnancyStatusAndFarm_FarmId(String goatTagNumber, String pregnancyStatus, Long farmId);
 
     boolean existsByGoatTagNumberAndPregnancyStatusAndFarm_FarmId(String goatTagNumber, String pregnancyStatus, Long farmId);
 

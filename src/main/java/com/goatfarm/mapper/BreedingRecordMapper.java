@@ -34,10 +34,12 @@ public class BreedingRecordMapper {
     }
 
     // Convert DTO → Entity
-    public static BreedingRecord toEntity(BreedingRecordData dto, Goat goat, Goat mate) {
+    public static BreedingRecord toEntity(BreedingRecordData dto, Goat goat, Goat mate, Long farmId) {
         if (dto == null) {
             return null;
         }
+
+
 
         BreedingRecord entity = new BreedingRecord();
         entity.setBreedingId(dto.getBreedingId());
@@ -54,6 +56,7 @@ public class BreedingRecordMapper {
         // Set relationships
         entity.setGoat(goat);
         entity.setMate(mate);
+        entity.setFarm(goat.getFarm());
         return entity;
     }
 }

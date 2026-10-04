@@ -76,7 +76,7 @@ public class FarmService {
 //        farm.setFarmName(req.getFarmName());
 //        farm.setLocation(req.getLocation());
         farm.setSize(req.getSize());
-        farm.setGoatTypes(normalizeGoatTypes(req.getGoatType()));
+        farm.setGoatTypes(normalizeGoatTypes(req.getGoatTypes()));
 
         Farm saved = farmRepository.save(farm);
 

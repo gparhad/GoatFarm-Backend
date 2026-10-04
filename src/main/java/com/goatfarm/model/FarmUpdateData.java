@@ -7,5 +7,5 @@ public class FarmUpdateData {
     private String farmName;
     private String location;
     private Double size;
-    private String goatType;
+    private String goatTypes;
 }
