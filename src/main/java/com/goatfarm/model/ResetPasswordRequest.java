@@ -1,9 +1,9 @@
 package com.goatfarm.model;
 
-import lombok.Data;
+public record ResetPasswordRequest(String resetToken, String newPassword) {
 
-@Data
-public class ResetPasswordRequest {
-    private String resetToken;
-    private String newPassword;
+    @Override
+    public String toString() {
+        return "ResetPasswordRequest[resetToken=***, newPassword=***]";
+    }
 }

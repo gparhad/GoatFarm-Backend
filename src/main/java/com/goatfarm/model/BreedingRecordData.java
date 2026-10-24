@@ -1,17 +1,25 @@
 package com.goatfarm.model;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 public class BreedingRecordData {
     private Long breedingId;
     private LocalDate breedingDate;
     private String pregnancyStatus;
     private Integer offspringCount;
+
+    @NotBlank(message = "goatTagNumber is required")
     private String goatTagNumber;
+
+    @NotBlank(message = "breederTagNumber is required")
     private String breederTagNumber;
+
     private LocalDate expectedKiddingDate;
     private Long goatId;
     private Long mateId;

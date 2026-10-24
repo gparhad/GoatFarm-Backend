@@ -1,23 +1,28 @@
 package com.goatfarm.mapper;
 
+import com.goatfarm.entity.Farm;
 import com.goatfarm.entity.User;
 import com.goatfarm.model.UserData;
 
-import java.util.Objects;
+public final class UserMapper {
 
-public class UserMapper {
-    // User → UserDTO
-    public static UserData toUserDTO(User user, boolean passwordRequired) {
-        if (user == null) return null;
+    private UserMapper() {
+    }
+
+    /** Never exposes the password (the DTO field is write-only as well). */
+    public static UserData toDto(User user,boolean passwordRequired) {
+        if (user == null) {
+            return null;
+        }
         UserData dto = new UserData();
         dto.setUserId(user.getUserId());
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
         dto.setFullName(user.getFullName());
-        if(Objects.nonNull(user.getFarm()))
-        {
-            dto.setFarmId(user.getFarm().getFarmId());
-            dto.setFarmName(user.getFarm().getFarmName());
+        Farm farm = user.getFarm();
+        if (farm != null) {
+            dto.setFarmId(farm.getFarmId());
+            dto.setFarmName(farm.getFarmName());
         }
         if(passwordRequired)
         {
@@ -26,26 +31,22 @@ public class UserMapper {
         return dto;
     }
 
-    // UserDTO → User
-    public static User toUser(UserData dto, boolean passwordRequired) {
-        if (dto == null) return null;
+    /** @param email already normalised; @param encodedPassword already hashed */
+    public static User toEntity(UserData dto, String email, String encodedPassword) {
         User user = new User();
-        user.setUserId(dto.getUserId());
         user.setFullName(dto.getFullName());
-        user.setEmail(dto.getEmail());
+        user.setEmail(email);
         user.setPhone(dto.getPhone());
-        if (passwordRequired) {
-            user.setPasswordHash(dto.getPasswordHash());
+        user.setPasswordHash(encodedPassword);
+        return user;
+    }
+
+    /** Email and phone follow the request (null clears them, as before); the name is only changed when one is supplied. */
+    public static void applyUpdate(User user, UserData data, String email) {
+        user.setEmail(email);
+        user.setPhone(data.getPhone());
+        if (data.getFullName() != null && !data.getFullName().isBlank()) {
+            user.setFullName(data.getFullName());
         }
-        return user;
     }
-
-    public static User toUserForUpdate(UserData userData, Long userId, User user){
-        if(userData == null) return null;
-        user.setEmail(userData.getEmail());
-        user.setPhone(userData.getPhone());
-        user.setFullName(user.getFullName());
-        return user;
-    }
-
 }

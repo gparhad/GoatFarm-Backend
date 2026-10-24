@@ -1,71 +1,92 @@
 package com.goatfarm.service;
 
 import com.goatfarm.entity.User;
+import com.goatfarm.exception.BusinessRuleViolationException;
+import com.goatfarm.exception.ResourceNotFoundException;
 import com.goatfarm.mapper.UserMapper;
 import com.goatfarm.model.UserData;
 import com.goatfarm.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.goatfarm.security.PasswordService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
+    private final PasswordService passwordService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordService passwordService) {
         this.userRepository = userRepository;
+        this.passwordService = passwordService;
     }
 
-    public UserData createUser(UserData user) {
-        // Sanitize: Treat empty string as null so it doesn't trigger unique constraint collisions
-        String email = cleanEmail(user.getEmail());
-        user.setEmail(email);
-
+    /**
+     * Registers a user. The request's {@code passwordHash} field carries the plain password; it is stored as BCrypt.
+     */
+    @Transactional
+    public UserData addUser(UserData userData) {
+        String email = normalizeEmail(userData.getEmail());
         if (email != null && userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email '" + email + "' is already in use.");
+            log.warn("User registration rejected: email already in use");
+            throw new BusinessRuleViolationException("Email '" + email + "' is already in use.");
         }
-
-        User userEntity = userRepository.save(UserMapper.toUser(user, true));
-        return UserMapper.toUserDTO(userEntity, false);
+        passwordService.validateNewPassword(userData.getPasswordHash());
+        User saved = userRepository.save(
+                UserMapper.toEntity(userData, email, passwordService.encode(userData.getPasswordHash())));
+        log.info("User registered: userId={}", saved.getUserId());
+        return UserMapper.toDto(saved, true);
     }
 
+    @Transactional
     public UserData updateUser(UserData userData, Long userId) {
-        String email = cleanEmail(userData.getEmail());
-        userData.setEmail(email);
-
+        String email = normalizeEmail(userData.getEmail());
         if (email != null && userRepository.existsByEmailAndUserIdNot(email, userId)) {
-            throw new IllegalArgumentException("Email '" + email + "' is already in use by another user.");
+            log.warn("User update rejected: email already used by another user, userId={}", userId);
+            throw new BusinessRuleViolationException("Email '" + email + "' is already in use by another user.");
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Farm not found: " + userId));
-
-        User userEntity = userRepository.save(UserMapper.toUserForUpdate(userData, userId, user));
-        return UserMapper.toUserDTO(userEntity, false);
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+        UserMapper.applyUpdate(user, userData, email);
+        User saved = userRepository.save(user);
+        log.info("User updated: userId={}", userId);
+        return UserMapper.toDto(saved, false);
     }
 
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    /**
+     * Returns an empty object when the user does not exist (existing API behaviour).
+     */
+    public UserData getUserById(Long userId) {
+        if (userId == null) {
+            return new UserData();
+        }
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            return UserMapper.toDto(userOptional.get(), false);
+        } else {
+            log.warn("User not found: userId={}", userId);
+            return new UserData();
+        }
+
     }
 
-    public UserData getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(user -> UserMapper.toUserDTO(user, false))
-                .orElseGet(UserData::new);
-    }
-
-    public UserData findByUsername(String email) {
-        return userRepository.findByEmail(email)
-                .map(user -> UserMapper.toUserDTO(user, true))
-                .orElseGet(UserData::new);
-    }
-
-    private String cleanEmail(String email) {
-        if (email == null || email.trim().isEmpty()) {
+    static String normalizeEmail(String email) {
+        if (email == null || email.isBlank()) {
             return null;
         }
         return email.trim().toLowerCase();
+    }
+
+    public UserData findByUserName(String email) {
+        return userRepository.findByEmailIgnoreCase(email)
+                .map(user -> UserMapper.toDto(user, true))
+                .orElseGet(UserData::new);
     }
 }

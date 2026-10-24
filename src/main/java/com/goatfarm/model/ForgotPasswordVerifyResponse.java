@@ -1,12 +1,9 @@
 package com.goatfarm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+public record ForgotPasswordVerifyResponse(boolean success, String message, String resetToken) {
 
-@Data
-@AllArgsConstructor
-public class ForgotPasswordVerifyResponse {
-    private boolean success;
-    private String message;
-    private String resetToken;
+    @Override
+    public String toString() {
+        return "ForgotPasswordVerifyResponse[success=" + success + ", message=" + message + ", resetToken=***]";
+    }
 }

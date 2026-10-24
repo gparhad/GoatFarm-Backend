@@ -1,8 +1,10 @@
 package com.goatfarm.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class FarmData {
     private Long farmId;
     private String farmName;
@@ -10,6 +12,6 @@ public class FarmData {
     private Double size;
     private String goatTypes;
     private Long userId;
-    private UserData farmer; // include limited user info
+    /** Limited user info (never includes credentials). */
+    private UserData farmer;
 }
-

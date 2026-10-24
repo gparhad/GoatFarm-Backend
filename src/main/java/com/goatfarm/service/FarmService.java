@@ -2,19 +2,24 @@ package com.goatfarm.service;
 
 import com.goatfarm.entity.Farm;
 import com.goatfarm.entity.User;
+import com.goatfarm.exception.BusinessRuleViolationException;
+import com.goatfarm.exception.ResourceNotFoundException;
 import com.goatfarm.mapper.FarmMapper;
 import com.goatfarm.model.FarmData;
-import com.goatfarm.model.FarmUpdateData;
 import com.goatfarm.repository.FarmRepository;
 import com.goatfarm.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class FarmService {
+
+    private static final Logger log = LoggerFactory.getLogger(FarmService.class);
 
     private final FarmRepository farmRepository;
     private final UserRepository userRepository;
@@ -25,71 +30,57 @@ public class FarmService {
     }
 
     /**
-     * Register a farm for a user.
-     * No functional change: still uses farmData.getUserId() and associates farm.farmer.
-     */
-    public Farm registerFarm(FarmData farmData) {
-        Farm farm = FarmMapper.toFarm(farmData);
-        Long userId = farmData.getUserId();
-
-        if (userId == null) {
-            // Keeps behavior safe; will be handled by ControllerAdvice as 400 if you add handler
-            throw new IllegalArgumentException("userId is required to register farm");
-        }
-
-        User farmer = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        farm.setFarmer(farmer);
-        return farmRepository.save(farm);
-    }
-
-    /**
-     * Get farm by farmer (user) id.
-     * No functional change: returns empty FarmData if not found (same as before).
-     */
-    public FarmData getFarmByFarmer(Long userId) {
-        Optional<Farm> farmOptional = farmRepository.findByFarmerUserId(userId);
-        return farmOptional.map(FarmMapper::toFarmDTO).orElseGet(FarmData::new);
-    }
-
-    /**
-     * Get farm by farmId.
-     * No functional change: returns empty FarmData if not found (same as before).
-     */
-    public FarmData getFarmByFarmId(Long farmId) {
-        Optional<Farm> farmOptional = farmRepository.findById(farmId);
-        return farmOptional.map(FarmMapper::toFarmDTO).orElseGet(FarmData::new);
-    }
-
-    /**
-     * Update farm fields.
-     * No functional change: throws EntityNotFoundException if farm not found (same behavior intent).
+     * Registers a farm for a user. The farm id is always generated, never taken from the request, and a user
+     * can own only one farm (previously a second attempt overwrote data or failed with a 500).
      */
     @Transactional
-    public FarmData updateFarm(Long farmId, FarmUpdateData req) {
-        Farm farm = farmRepository.findById(farmId)
-                .orElseThrow(() -> new EntityNotFoundException("Farm not found: " + farmId));
-
-
-        // Update farm fields
-//        farm.setFarmName(req.getFarmName());
-//        farm.setLocation(req.getLocation());
-        farm.setSize(req.getSize());
-        farm.setGoatTypes(normalizeGoatTypes(req.getGoatTypes()));
-
+    public FarmData addFarm(FarmData farmData) {
+        Long userId = farmData.getUserId();
+        if (userId == null) {
+            throw new BusinessRuleViolationException("userId is required to register farm");
+        }
+        User farmer = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (farmRepository.findByFarmerUserId(userId).isPresent()) {
+            log.warn("Farm registration rejected: user already has a farm, userId={}", userId);
+            throw new BusinessRuleViolationException("A farm is already registered for this user");
+        }
+        Farm farm = FarmMapper.toEntity(farmData);
+        farm.setFarmer(farmer);
         Farm saved = farmRepository.save(farm);
-
-        // Return same shape as GET
-        return FarmMapper.toFarmDTO(saved);
+        log.info("Farm registered: farmId={}, userId={}", saved.getFarmId(), userId);
+        return FarmMapper.toDto(saved);
     }
 
-    /**
-     * Normalize goat types: "BEETAL ,BOER" -> "BEETAL, BOER"
-     * No functional change.
-     */
-    private String normalizeGoatTypes(String goatTypes) {
-        if (goatTypes == null) return "";
+    /** Returns an empty object when there is no farm (existing API behaviour). */
+    public FarmData getFarmByFarmId(Long farmId) {
+        return findFarm(farmId).map(FarmMapper::toDto).orElseGet(() -> {
+            log.warn("Farm not found: farmId={}", farmId);
+            return new FarmData();
+        });
+    }
+
+    /** Only {@code size} and {@code goatTypes} are updatable (name and location are not, as before). */
+    @Transactional
+    public FarmData updateFarm(Long farmId, FarmData farmData) {
+        Farm farm = findFarm(farmId)
+                .orElseThrow(() -> new ResourceNotFoundException("Farm not found: " + farmId));
+        farm.setSize(farmData.getSize());
+        farm.setGoatTypes(normalizeGoatTypes(farmData.getGoatTypes()));
+        Farm saved = farmRepository.save(farm);
+        log.info("Farm updated: farmId={}", farmId);
+        return FarmMapper.toDto(saved);
+    }
+
+    private Optional<Farm> findFarm(Long farmId) {
+        return farmId == null ? Optional.empty() : farmRepository.findById(farmId);
+    }
+
+    /** "BEETAL ,BOER" becomes "BEETAL, BOER". */
+    static String normalizeGoatTypes(String goatTypes) {
+        if (goatTypes == null) {
+            return "";
+        }
         return goatTypes.trim()
                 .replaceAll("\\s*,\\s*", ", ")
                 .replaceAll("^\\s*,|\\s*,$", "");

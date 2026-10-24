@@ -1,10 +1,12 @@
 package com.goatfarm.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 public class GoatTreeNode {
     private String tagNumber;
     private String breed;
@@ -14,9 +16,6 @@ public class GoatTreeNode {
     private GoatTreeNode mother;
     private Double weight;
     private Double height;
-
     private boolean cycleDetected;
     private String missingReason;
-
-
 }

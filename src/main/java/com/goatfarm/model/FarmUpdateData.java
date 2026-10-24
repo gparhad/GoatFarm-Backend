@@ -1,11 +1,4 @@
 package com.goatfarm.model;
 
-import lombok.Data;
-
-@Data
-public class FarmUpdateData {
-    private String farmName;
-    private String location;
-    private Double size;
-    private String goatTypes;
+public record FarmUpdateData(String farmName, String location, Double size, String goatTypes) {
 }

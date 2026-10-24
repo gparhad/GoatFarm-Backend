@@ -1,13 +1,18 @@
 package com.goatfarm.config;
 
-import com.goatfarm.util.JwtFilter;
+import com.goatfarm.security.JwtAuthenticationEntryPoint;
+import com.goatfarm.security.JwtFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -20,10 +25,18 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
-    public SecurityConfig(JwtFilter jwtFilter) {
+    private final JwtFilter jwtFilter;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final CorsProperties corsProperties;
+
+    public SecurityConfig(JwtFilter jwtFilter,
+                          JwtAuthenticationEntryPoint authenticationEntryPoint,
+                          CorsProperties corsProperties) {
         this.jwtFilter = jwtFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.corsProperties = corsProperties;
     }
 
     @Bean
@@ -31,38 +44,41 @@ public class SecurityConfig {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Explicitly allow all OPTIONS requests through
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/h2-console/**", "/api/auth/**", "/api/user/addUser", "/api/farm/addFarm").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/user/addUser", "/api/farm/addFarm", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
-                )
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-    // 2. High-precedence CorsFilter that executes before any Spring Security filter
+    /**
+     * JwtFilter is a Spring bean, so Boot would also register it as a plain servlet filter
+     * (running it twice per request). It must only run inside the security chain.
+     */
+    @Bean
+    public FilterRegistrationBean<JwtFilter> jwtFilterRegistration(JwtFilter filter) {
+        FilterRegistrationBean<JwtFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    /** High-precedence CorsFilter so pre-flight requests are answered before any security filter runs. */
     @Bean
     public FilterRegistrationBean<CorsFilter> customCorsFilter() {
+        List<String> origins = corsProperties.allowedOriginPatterns();
+        if (origins.contains("*")) {
+            log.warn("CORS allows ANY origin. Set APP_CORS_ALLOWED_ORIGINS to your frontend origin(s) in production.");
+        }
         CorsConfiguration config = new CorsConfiguration();
-
-        // Allowed Origins
-        config.setAllowedOriginPatterns(List.of(
-                "http://localhost:4200",
-                "http://localhost",
-                "https://localhost",
-                "capacitor://localhost",
-                "http://192.168.1.*",
-                "*"
-        ));
-
+        config.setAllowedOriginPatterns(origins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization", "Link", "X-Total-Count"));
-        config.setAllowCredentials(true);
+        config.setAllowCredentials(corsProperties.allowCredentials());
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -1,11 +1,5 @@
 package com.goatfarm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
-public class AuthUser {
-    private Long userId;
-    private Long farmId;
+/** The authenticated principal extracted from the JWT. {@code farmId} is null for users who have not registered a farm yet. */
+public record AuthUser(Long userId, Long farmId) {
 }
